@@ -5,19 +5,21 @@
  * The test suites provide granular BDD style (Behaviour Driven Development) test cases
  * which will help further understand the specification you need to code to.
  *
- * @author YOUR_STUDENT_NUMBER
- * @date March, 2020
+ * 931478
+ * 15 March, 2020
  */
 #pragma once
+#ifndef GRID
 
 // Add the minimal number of includes you need in order to declare the class.
 // #include ...
+#include <vector>
 
 /**
  * A Cell is a char limited to two named values for Cell::DEAD and Cell::ALIVE.
  */
 enum Cell : char {
-    DEAD  = ' ',
+    DEAD  = '0',
     ALIVE = '#'
 };
 
@@ -25,7 +27,37 @@ enum Cell : char {
  * Declare the structure of the Grid class for representing a 2d grid of cells.
  */
 class Grid {
-    // How to draw an owl:
-    //      Step 1. Draw a circle.
-    //      Step 2. Draw the rest of the owl.
+    private:
+        int width;
+        int height;
+        std::vector<Cell> gridCells;
+
+        int get_index(int x, int y) const;
+    public:
+        Grid();
+        Grid(int height);
+        Grid(int width, int height);
+
+        int get_width();
+        int get_height();
+        int get_total_cells();
+        int get_alive_cells();
+        int get_dead_cells();
+
+        void resize(int square_size);
+        void resize(int width, int height);
+
+
+        Cell get(int x, int y);
+        void set(int x, int y, Cell value);
+
+        Cell& operator()( int x, int y);
+        const Cell& operator()( int x, int y)const;
+        //Cell& operator()( int x, int y);
+
+        // How to draw an owl:
+        //      Step 1. Draw a circle.
+        //      Step 2. Draw the rest of the owl.
 };
+
+#endif

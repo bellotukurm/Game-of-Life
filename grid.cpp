@@ -8,10 +8,11 @@
  *
  * You are encouraged to use STL container types as an underlying storage mechanism for the grid cells.
  *
- * @author YOUR_STUDENT_NUMBER
- * @date March, 2020
+ * 931478
+ * 15 March, 2020
  */
 #include "grid.h"
+#include <iostream>
 
 // Include the minimal number of headers needed to support your implementation.
 // #include ...
@@ -28,7 +29,10 @@
  *      Grid grid;
  *
  */
-
+Grid::Grid(){
+    this->width = 0;
+    this->height = 0;
+}
 
 /**
  * Grid::Grid(square_size)
@@ -53,7 +57,13 @@
  * @param square_size
  *      The edge size to use for the width and height of the grid.
  */
-
+Grid::Grid(int square_size){
+    this->width = square_size;
+    this->height = square_size;
+    for (int i = 0; i < (height*width); i++) {
+        gridCells.push_back(Cell::DEAD);
+    }
+}
 
 /**
  * Grid::Grid(width, height)
@@ -71,7 +81,13 @@
  * @param height
  *      The height of the grid.
  */
-
+Grid::Grid(int width, int height){
+    this->width = width;
+    this->height = height;
+    for (int i = 0; i < (height*width); i++) {
+        gridCells.push_back(Cell::DEAD);
+    }
+}
 
 /**
  * Grid::get_width()
@@ -96,6 +112,9 @@
  * @return
  *      The width of the grid.
  */
+Grid::get_width(){
+    return this->width;
+}
 
 
 /**
@@ -121,7 +140,9 @@
  * @return
  *      The height of the grid.
  */
-
+int Grid::get_height(){
+    return this->height;
+}
 
 /**
  * Grid::get_total_cells()
@@ -146,7 +167,9 @@
  * @return
  *      The number of total cells.
  */
-
+Grid::get_total_cells(){
+    return (this->height * this->width);
+}
 
 /**
  * Grid::get_alive_cells()
@@ -171,6 +194,15 @@
  * @return
  *      The number of alive cells.
  */
+int Grid::get_alive_cells(){
+    int count = 0;
+    for (int i = 0; i < (height*width); i++) {
+        if(gridCells[i] == ALIVE){
+            count++;
+        }
+    }
+    return count;
+}
 
 
 /**
@@ -196,6 +228,15 @@
  * @return
  *      The number of dead cells.
  */
+int Grid::get_dead_cells(){
+    int count = 0;
+    for (int i = 0; i < (height*width); i++) {
+        if(gridCells[i] == DEAD){
+            count++;
+        }
+    }
+    return count;
+}
 
 
 /**
@@ -215,6 +256,84 @@
  * @param square_size
  *      The new edge size for both the width and height of the grid.
  */
+void Grid::resize(int square_size){
+    std::vector<Cell> gridCellsOld = gridCells;
+
+    int prevWidth = width;
+    int prevHeight = height;
+    this->width = square_size;
+    this->height = square_size;
+
+    if(this->height >= prevHeight && this->width < prevWidth){
+        gridCells.clear();
+        int cx = 0;
+        int cy = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(cx < prevWidth && cy < prevHeight){
+                    gridCells.push_back(gridCellsOld[cx + (prevWidth * cy)]);
+                    cx++;
+                } else{
+                    gridCells.push_back(Cell::DEAD);
+                }
+                if(cx == width){
+                    cx = 0;
+                    cy++;
+                }
+            }
+        }
+    }
+    else if(this->width >= prevWidth && this->height < prevHeight){
+        gridCells.clear();
+        int cx = 0;
+        int cy = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(cx < prevWidth && cy < prevHeight){
+                    gridCells.push_back(gridCellsOld[cx + (prevWidth * cy)]);
+                    cx++;
+                } else{
+                    gridCells.push_back(Cell::DEAD);
+                }
+                if(x == width-1){
+                    cx = 0;
+                    cy++;
+                }
+            }
+        }
+    }
+    else if(this->height > prevHeight && this->width > prevWidth){
+        gridCells.clear();
+        int cx = 0;
+        int cy = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(cx < prevWidth && cy < prevHeight){
+                    gridCells.push_back(gridCellsOld[cx + (prevWidth * cy)]);
+                    cx++;
+                } else{
+                    gridCells.push_back(Cell::DEAD);
+                }
+                if(x == width-1){
+                    cx = 0;
+                    cy++;
+                }
+            }
+        }
+    }
+    else if(this->height < prevHeight && this->width < prevWidth){
+        for (int y = 0; y < prevHeight; y++) {
+            for (int x = 0; x < prevWidth; x++) {
+                if(x >= width || y >= height){
+                    gridCells.erase(gridCells.begin() + get_index(x,y));
+                }
+            }
+        }
+    }
+    else if(this->height == prevHeight && this->width == prevWidth){
+    }
+
+}
 
 
 /**
@@ -237,6 +356,84 @@
  * @param new_height
  *      The new height for the grid.
  */
+void Grid::resize(int w, int h){
+    std::vector<Cell> gridCellsOld = gridCells;
+
+    int prevWidth = width;
+    int prevHeight = height;
+    this->width = w;
+    this->height = h;
+
+    if(this->height >= prevHeight && this->width < prevWidth){
+        gridCells.clear();
+        int cx = 0;
+        int cy = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(cx < prevWidth && cy < prevHeight){
+                    gridCells.push_back(gridCellsOld[cx + (prevWidth * cy)]);
+                    cx++;
+                } else{
+                    gridCells.push_back(Cell::DEAD);
+                }
+                if(cx == width){
+                    cx = 0;
+                    cy++;
+                }
+            }
+        }
+    }
+    else if(this->width >= prevWidth && this->height < prevHeight){
+        gridCells.clear();
+        int cx = 0;
+        int cy = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(cx < prevWidth && cy < prevHeight){
+                    gridCells.push_back(gridCellsOld[cx + (prevWidth * cy)]);
+                    cx++;
+                } else{
+                    gridCells.push_back(Cell::DEAD);
+                }
+                if(x == width-1){
+                    cx = 0;
+                    cy++;
+                }
+            }
+        }
+    }
+    else if(this->height > prevHeight && this->width > prevWidth){
+        gridCells.clear();
+        int cx = 0;
+        int cy = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(cx < prevWidth && cy < prevHeight){
+                    gridCells.push_back(gridCellsOld[cx + (prevWidth * cy)]);
+                    cx++;
+                } else{
+                    gridCells.push_back(Cell::DEAD);
+                }
+                if(x == width-1){
+                    cx = 0;
+                    cy++;
+                }
+            }
+        }
+    }
+    else if(this->height < prevHeight && this->width < prevWidth){
+        for (int y = 0; y < prevHeight; y++) {
+            for (int x = 0; x < prevWidth; x++) {
+                if(x >= width || y >= height){
+                    gridCells.erase(gridCells.begin() + get_index(x,y));
+                }
+            }
+        }
+    }
+    else if(this->height == prevHeight && this->width == prevWidth){
+    }
+
+}
 
 
 /**
@@ -255,6 +452,9 @@
  * @return
  *      The 1d offset from the start of the data array where the desired cell is located.
  */
+int Grid::get_index(int x, int y) const{
+    return x + (width * y);
+}
 
 
 /**
@@ -285,6 +485,10 @@
  * @throws
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
+Cell Grid::get(int x, int y){
+    Cell cell = Grid::operator()(x,y);
+    return cell;
+}
 
 
 /**
@@ -313,6 +517,10 @@
  * @throws
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
+void Grid::set(int x, int y, Cell value){
+    Cell& cell = Grid::operator()(x,y);
+    cell = value;
+}
 
 
 /**
@@ -350,7 +558,10 @@
  * @throws
  *      std::runtime_error or sub-class if x,y is not a valid coordinate within the grid.
  */
-
+Cell& Grid::operator()( int x, int y) {
+    int index = this->get_index( x, y);
+    return gridCells[index];
+}
 
 /**
  * Grid::operator()(x, y)
@@ -382,7 +593,10 @@
  * @throws
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
-
+const Cell& Grid::operator()( int x, int y)const  {
+    int index = this->get_index( x, y);
+    return gridCells[index];
+}
 
 /**
  * Grid::crop(x0, y0, x1, y1)

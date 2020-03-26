@@ -632,6 +632,20 @@ const Cell& Grid::operator()( int x, int y)const  {
  *      std::exception or sub-class if x0,y0 or x1,y1 are not valid coordinates within the grid
  *      or if the crop window has a negative size.
  */
+Grid Grid::crop(int x0, int y0, int x1, int y1){
+    std::vector<Cell> gridCellsOld = gridCells;
+    int croppedWidth = x1-x0;
+    int croppedHeight = y1-y0;
+    Grid croppedGrid = Grid(croppedWidth, croppedHeight);
+
+    croppedGrid.gridCells.clear();
+    for (int y = y0; y < y1; y++) {
+        for (int x = x0; x < x1; x++) {
+            croppedGrid.gridCells.push_back(gridCellsOld[get_index(x, y)]);
+        }
+    }
+    return croppedGrid;
+}
 
 
 /**
@@ -671,6 +685,9 @@ const Cell& Grid::operator()( int x, int y)const  {
  * @throws
  *      std::exception or sub-class if the other grid being placed does not fit within the bounds of the current grid.
  */
+void Grid::merge(other, x0, y0, alive_only = false){
+
+}
 
 
 /**

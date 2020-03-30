@@ -685,8 +685,18 @@ Grid Grid::crop(int x0, int y0, int x1, int y1){
  * @throws
  *      std::exception or sub-class if the other grid being placed does not fit within the bounds of the current grid.
  */
-void Grid::merge(other, x0, y0, alive_only = false){
-
+void Grid::merge( Grid other, int x0, int y0, bool alive_only ){
+    for (int j = 0, y = y0; y < (other.get_height()+y0); j++, y++) {
+        for (int i = 0, x = x0; x < (other.get_width()+x0); i++, x++) {
+            if(alive_only){
+                if(other.gridCells[other.get_index(i, j)] == Cell::ALIVE){
+                    gridCells[get_index(x, y)] = other.gridCells[other.get_index(i, j)];
+                }
+            }else{
+                gridCells[get_index(x, y)] = other.gridCells[other.get_index(i, j)];
+            }
+        }
+    }
 }
 
 
@@ -712,6 +722,50 @@ void Grid::merge(other, x0, y0, alive_only = false){
  * @return
  *      Returns a copy of the grid that has been rotated.
  */
+Grid Grid::rotate(int rotation){
+    Grid returnGrid1;
+    Grid returnGrid2;
+    Grid returnGrid3;
+    Grid returnGridFinal;
+    int times = rotation%4;
+    if(times < 0){
+        times = 4 + times;
+    }
+
+    for(int i = 0; i < times; i++){
+        if(i==0){
+            returnGrid1 = Grid(height, width);
+            for(int i = 0; i < returnGrid1.get_height(); i++){
+                for(int j = 0; j < returnGrid1.get_width(); j++){
+                    returnGrid1.gridCells[returnGrid1.get_index((returnGrid1.get_width() -1 -j), i)] = gridCells[get_index(i,j)];
+                }
+            }
+            returnGridFinal = returnGrid1;
+        }else if(i==1){
+            returnGrid2 = Grid(width, height);
+            for(int i = 0; i < returnGrid2.get_height(); i++){
+                for(int j = 0; j < returnGrid2.get_width(); j++){
+                    returnGrid2.gridCells[returnGrid2.get_index((returnGrid2.get_width() -1 -j),i)] = returnGrid1.gridCells[returnGrid1.get_index(i,j)];
+                }
+            }
+            returnGridFinal = returnGrid2;
+        }else if(i==2){
+            returnGrid3 = Grid(height, width);
+            for(int i = 0; i < returnGrid3.get_height(); i++){
+                for(int j = 0; j < returnGrid3.get_width(); j++){
+                    returnGrid3.gridCells[returnGrid3.get_index((returnGrid3.get_width() -1 -j),i)] = returnGrid2.gridCells[returnGrid2.get_index(i,j)];
+                }
+            }
+            returnGridFinal = returnGrid3;
+        }
+    }
+    if(times == 0){
+        returnGridFinal = Grid(width, height);
+        returnGridFinal.gridCells  = gridCells;
+    }
+
+    return returnGridFinal;
+}
 
 
 /**
@@ -749,4 +803,26 @@ void Grid::merge(other, x0, y0, alive_only = false){
  * @return
  *      Returns a reference to the output stream to enable operator chaining.
  */
+std::ostream& operator<<(std::ostream& os, Grid& grid) {
+    os << "+" ;
+    for(int z = 0; z < grid.get_width(); z++){
+        os << "-";
+    }
+    os << "+" << "\n";
+    for(int j = 0; j < grid.get_height(); j++){
+        os << "|";
+        for(int i = 0; i < grid.get_width(); i++){
+            os << char(grid.gridCells.at(grid.get_index(i,j)));
+        }
+        os << "|\n";
+    }
+
+    os << "+" ;
+    for(int z = 0; z < grid.get_width(); z++){
+        os << "-";
+    }
+    os << "+" << "\n";
+    return os;
+}
+
 

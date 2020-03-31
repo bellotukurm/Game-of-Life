@@ -39,17 +39,17 @@ class Grid {
         Grid(int height);
         Grid(int width, int height);
 
-        int get_width();
-        int get_height();
-        int get_total_cells();
-        int get_alive_cells();
-        int get_dead_cells();
+        int get_width() const;
+        int get_height() const;
+        int get_total_cells() const;
+        int get_alive_cells() const;
+        int get_dead_cells() const;
 
         void resize(int square_size);
         void resize(int width, int height);
 
 
-        Cell get(int x, int y);
+        Cell get(int x, int y) const;
         void set(int x, int y, Cell value);
 
         Cell& operator()( int x, int y);

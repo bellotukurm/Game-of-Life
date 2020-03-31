@@ -37,7 +37,10 @@
  *      World world;
  *
  */
-
+World::World(){
+    this->width = 0;
+    this->height = 0;
+}
 
 /**
  * World::World(square_size)
@@ -58,6 +61,17 @@
  * @param square_size
  *      The edge size to use for the width and height of the world.
  */
+World::World(int square_size){
+    this->width = square_size;
+    this->height = square_size;
+
+    currentGrid = Grid(width, height);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            currentGrid.set(x,y,Cell::DEAD);
+        }
+    }
+}
 
 
 /**
@@ -75,6 +89,17 @@
  * @param height
  *      The height of the world.
  */
+World::World(int width, int height){
+    this->width = width;
+    this->height = height;
+
+    currentGrid = Grid(width, height);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            currentGrid.set(x,y,Cell::DEAD);
+        }
+    }
+}
 
 
 /**
@@ -96,6 +121,17 @@
  * @param initial_state
  *      The state of the constructed world.
  */
+World::World(Grid initial_state){
+    this->width = initial_state.get_width();
+    this->height = initial_state.get_height();
+
+    currentGrid = Grid(width, height);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            currentGrid.set(x,y,initial_state.get(x,y));
+        }
+    }
+}
 
 
 /**
@@ -121,6 +157,9 @@
  * @return
  *      The width of the world.
  */
+int World::get_width(){
+    return this->width;
+}
 
 
 /**
@@ -146,6 +185,9 @@
  * @return
  *      The height of the world.
  */
+int World::get_height(){
+    return this->height;
+}
 
 
 /**
@@ -171,6 +213,9 @@
  * @return
  *      The number of total cells.
  */
+int World::get_total_cells(){
+    return (this->height * this->width);
+}
 
 
 /**
@@ -196,6 +241,17 @@
  * @return
  *      The number of alive cells.
  */
+int World::get_alive_cells(){
+    int count = 0;
+    for (int y = 0; y < currentGrid.get_height(); y++) {
+        for (int x = 0; x < currentGrid.get_width(); x++) {
+            if(currentGrid.get(x, y) == Cell::ALIVE){
+                count++;
+            }
+        }
+    }
+    return count;
+}
 
 
 /**
@@ -221,6 +277,17 @@
  * @return
  *      The number of dead cells.
  */
+int World::get_dead_cells(){
+    int count = 0;
+    for (int y = 0; y < currentGrid.get_height(); y++) {
+        for (int x = 0; x < currentGrid.get_width(); x++) {
+            if(currentGrid.get(x, y) == Cell::DEAD){
+                count++;
+            }
+        }
+    }
+    return count;
+}
 
 
 /**

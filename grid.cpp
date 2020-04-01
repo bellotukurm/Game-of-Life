@@ -521,7 +521,7 @@ Cell Grid::get(int x, int y) const{
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
 void Grid::set(int x, int y, Cell value){
-    if(x > get_width() || y > get_height() || x<0 || y<0){
+    if(x >= get_width() || y >= get_height() || x<0 || y<0){
         throw "not within bounds";
     }
     Cell& cell = Grid::operator()(x,y);

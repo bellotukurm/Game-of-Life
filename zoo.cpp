@@ -46,7 +46,15 @@
  * @return
  *      Returns a Grid containing a glider.
  */
-
+Grid Zoo::glider(){
+    Grid grid = Grid(3);
+    grid.set(1,0,Cell::ALIVE);
+    grid.set(2,1,Cell::ALIVE);
+    grid.set(0,2,Cell::ALIVE);
+    grid.set(1,2,Cell::ALIVE);
+    grid.set(2,2,Cell::ALIVE);
+    return grid;
+}
 
 /**
  * Zoo::r_pentomino()
@@ -68,7 +76,15 @@
  * @return
  *      Returns a Grid containing a r-pentomino.
  */
-
+/*Grid Zoo::r_(){
+    Grid grid = Grid(3);
+    grid.set(1,0,Cell::ALIVE);
+    grid.set(2,1,Cell::ALIVE);
+    grid.set(0,2,Cell::ALIVE);
+    grid.set(1,2,Cell::ALIVE);
+    grid.set(2,2,Cell::ALIVE);
+    return grid;
+}*/
 
 /**
  * Zoo::light_weight_spaceship()
@@ -117,6 +133,43 @@
  *          - Newline characters are not found when expected during parsing.
  *          - The character for a cell is not the ALIVE or DEAD character.
  */
+Grid Zoo::load_ascii(std::string path){
+    std::ifstream inputFile(path);
+    if(!inputFile.is_open()){
+        throw std::runtime_error("can't be opened");
+    }
+    int width;
+    int height;
+    inputFile >> width;
+    inputFile >> height;
+    if(width < 1 || height < 1){
+        throw std::runtime_error("width or height not a positive integer");
+    }
+    Grid grid = Grid(width,height);
+
+    char ch;
+    std::vector<char> cVector;
+
+    for(std::string line; getline(inputFile, line);){
+        std::stringstream lineS(line);
+        while(lineS >> std::noskipws >> ch){
+            cVector.push_back(ch);
+        }
+    }
+    for(int j = 0; j < grid.get_height(); j++){
+        for(int i = 0; i < grid.get_width(); i++){
+            if(cVector.at(i + (width * j)) == ' '){
+                grid.set(i,j,DEAD);
+            }else if(cVector.at(i + (width * j)) == '#'){
+                grid.set(i,j,ALIVE);
+            }else{
+                throw std::runtime_error("char not alive or dead");
+            }
+        }
+    }
+
+    return grid;
+}
 
 
 /**
@@ -147,6 +200,25 @@
  * @throws
  *      Throws std::runtime_error or sub-class if the file cannot be opened.
  */
+void Zoo::save_ascii(std::string path, Grid grid){
+    std::ofstream outputFile;
+    outputFile.open(path);
+
+    outputFile << grid.get_width();
+    outputFile << " ";
+    outputFile << grid.get_height();
+    outputFile << "\n";
+
+    std::vector<char> cVector;
+    for(int j = 0; j < grid.get_height(); j++){
+        for(int i = 0; i < grid.get_width(); i++){
+            outputFile << char(grid.get(i,j));
+        }
+        outputFile << "\n";
+    }
+
+    outputFile.close();
+}
 
 
 /**

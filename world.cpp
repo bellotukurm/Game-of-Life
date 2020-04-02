@@ -413,28 +413,27 @@ void World::resize(int new_width, int new_height){
 int World::count_neighbours(int x, int y, bool toroidal){
     int counter = 0;
 
-    /*int s = y-1;
-    int v = x-1;
-    for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 4; j++){
-            std::cout << "z" << i << j;
-        }
-    }*/
-
     for(int j = y-1; j <= y+1; j++){
         for(int i = x-1; i <= x+1; i++){
-            //std::cout << "x" << i << j;
-            //std::cout << i << j;
             if(i==x && j==y){}
             else{
                 if(toroidal){
                     if(i >= get_width() || j >= get_height() || i<0 || j<0){
-                        int a;
-                        int b;
-                        if(i < 0){ a = i+get_width();}
-                        else if(i >= get_width()){ a = i-get_width();}
-                        if(j < 0){ b = j+get_height();}
-                        else if(j >= get_height()){ a = j-get_height();}
+
+                        int a = i;
+                        int b = j;
+                        if(i < 0){
+                            a = get_width() + i;
+                        }
+                        else if(i >= get_width()){
+                            a = i-get_width();
+                        }
+                        if(j < 0){
+                            b = get_height() + j;
+                        }
+                        else if(j >= get_height()){
+                            b = j-get_height();
+                        }
 
                         if(currentGrid.get(a,b) == Cell::ALIVE){counter++;}
                     }
@@ -444,7 +443,6 @@ int World::count_neighbours(int x, int y, bool toroidal){
                 }else{
                     if(i >= get_width() || j >= get_height() || i<0 || j<0){}
                     else if(currentGrid.get(i,j) == Cell::ALIVE){
-                        //std::cout << char(currentGrid.get(i,j)) << i << j;
                         counter++;
                     }
                 }
@@ -475,18 +473,10 @@ int World::count_neighbours(int x, int y, bool toroidal){
  *      wraps to the right edge and the top to the bottom. Defaults to false.
  */
 void World::step(bool toroidal){
-    std::cout << "happening";
-    for(int j = 0; j < currentGrid.get_height(); j++){
-        std::cout << "\n";
-        for(int i = 0; i < currentGrid.get_width(); i++){
-            std::cout << char(currentGrid.get(i,j));
-        }
-    }
-    std::cout << "\n";
+
     for(int y = 0; y < get_height(); y++){
         for(int x = 0; x < get_width(); x++){
             int aliveNeighbours = count_neighbours(x, y, toroidal);
-            std::cout << "value" << x << y << aliveNeighbours << "\n";
             if(aliveNeighbours == 2 || aliveNeighbours == 3){
                 if(currentGrid.get(x,y) == Cell::ALIVE){
                     nextGrid.set(x,y, ALIVE);
@@ -499,13 +489,6 @@ void World::step(bool toroidal){
         }
     }
     currentGrid = nextGrid;
-    std::cout << "\n happened \n";
-    for(int j = 0; j < nextGrid.get_height(); j++){
-        std::cout << "\n";
-        for(int i = 0; i < nextGrid.get_width(); i++){
-            std::cout << char(nextGrid.get(i,j));
-        }
-    }
 }
 
 
@@ -523,7 +506,6 @@ void World::step(bool toroidal){
  *      wraps to the right edge and the top to the bottom. Defaults to false.
  */
 void World::advance(int steps, bool toroidal){
-    //std::cout << "steps" << steps;
     for(int i = 0; i < steps; i++){
         step(toroidal);
     }

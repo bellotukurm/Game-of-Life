@@ -487,7 +487,7 @@ int Grid::get_index(int x, int y) const{
  */
 Cell Grid::get(int x, int y) const{
     if(x > get_width() || y > get_height() || x<0 || y<0){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     Cell cell = Grid::operator()(x,y);
     return cell;
@@ -522,7 +522,7 @@ Cell Grid::get(int x, int y) const{
  */
 void Grid::set(int x, int y, Cell value){
     if(x >= get_width() || y >= get_height() || x<0 || y<0){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     Cell& cell = Grid::operator()(x,y);
     cell = value;
@@ -566,7 +566,7 @@ void Grid::set(int x, int y, Cell value){
  */
 Cell& Grid::operator()( int x, int y) {
     if(x > get_width() || y > get_height() || x<0 || y<0){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     int index = this->get_index( x, y);
     return gridCells[index];
@@ -604,7 +604,7 @@ Cell& Grid::operator()( int x, int y) {
  */
 const Cell& Grid::operator()( int x, int y)const  {
     if(x > get_width() || y > get_height() || x<0 || y<0){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     int index = this->get_index( x, y);
     return gridCells[index];
@@ -646,10 +646,10 @@ const Cell& Grid::operator()( int x, int y)const  {
  */
 Grid Grid::crop(int x0, int y0, int x1, int y1){
     if(x0 > get_width() || y0 > get_height() || x0<0 || y0<0){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     if(x1 > get_width() || y1 > get_height() || x1<0 || y1<0){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     std::vector<Cell> gridCellsOld = gridCells;
     int croppedWidth = x1-x0;
@@ -705,7 +705,7 @@ Grid Grid::crop(int x0, int y0, int x1, int y1){
  */
 void Grid::merge( Grid other, int x0, int y0, bool alive_only ){
     if(other.get_width() > get_width() || other.get_height() > get_height()){
-        throw "not within bounds";
+        throw std::runtime_error("not within bounds");
     }
     for (int j = 0, y = y0; y < (other.get_height()+y0); j++, y++) {
         for (int i = 0, x = x0; x < (other.get_width()+x0); i++, x++) {

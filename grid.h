@@ -15,12 +15,13 @@
 // #include ...
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
 /**
  * A Cell is a char limited to two named values for Cell::DEAD and Cell::ALIVE.
  */
 enum Cell : char {
-    DEAD  = '0',
+    DEAD  = ' ',
     ALIVE = '#'
 };
 

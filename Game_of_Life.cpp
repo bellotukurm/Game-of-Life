@@ -20,7 +20,7 @@
 int main(int argc, char *argv[]) {
 
     cxxopts::Options options("Game_of_Life",
-            "This program implements John Conway's Game of Life for Cellular Automaton (circa 1970).");
+                             "This program implements John Conway's Game of Life for Cellular Automaton (circa 1970).");
 
     // Declare the valid command line arguments and their types and default values.
     options.add_options()

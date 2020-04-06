@@ -62,7 +62,7 @@ class Grid {
 
         Grid rotate(int rotation);
 
-        friend std::ostream& operator<<(std::ostream& os, Grid& grid);
+        friend std::ostream& operator<<(std::ostream& os, const Grid& grid);
         // How to draw an owl:
         //      Step 1. Draw a circle.
         //      Step 2. Draw the rest of the owl.

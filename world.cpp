@@ -320,7 +320,7 @@ int World::get_dead_cells(){
  * @return
  *      A reference to the current state.
  */
-Grid World::get_state(){
+const Grid& World::get_state(){
     return currentGrid;
 }
 

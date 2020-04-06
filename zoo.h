@@ -18,18 +18,22 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <bits/stdc++.h>
 
 /**
  * Declare the interface of the Zoo namespace for constructing lifeforms and saving and loading them from file.
  */
 namespace Zoo {
-    //private:
 
-
-    //public:
-    Grid glider();
     Grid load_ascii(std::string path);
     void save_ascii(std::string path, Grid grid);
+    Grid load_binary(std::string path);
+    void save_binary(std::string path, Grid grid);
+
+    Grid glider();
+    Grid r_pentomino();
+    Grid light_weight_spaceship();
+
     // How to draw an owl:
     //      Step 1. Draw a circle.
     //      Step 2. Draw the rest of the owl.

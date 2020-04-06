@@ -645,12 +645,14 @@ const Cell& Grid::operator()( int x, int y)const  {
  *      or if the crop window has a negative size.
  */
 Grid Grid::crop(int x0, int y0, int x1, int y1){
-    if(x0 > get_width() || y0 > get_height() || x0<0 || y0<0){
+    if(x0 > get_width() || y0 > get_height() || x0<0 || y0<0 ||
+        x1 > get_width() || y1 > get_height() || x1<0 || y1<0 ){
         throw std::runtime_error("not within bounds");
     }
-    if(x1 > get_width() || y1 > get_height() || x1<0 || y1<0){
+    if(x0 == y1 && x1 == y0){
         throw std::runtime_error("not within bounds");
     }
+
     std::vector<Cell> gridCellsOld = gridCells;
     int croppedWidth = x1-x0;
     int croppedHeight = y1-y0;
@@ -704,7 +706,10 @@ Grid Grid::crop(int x0, int y0, int x1, int y1){
  *      std::exception or sub-class if the other grid being placed does not fit within the bounds of the current grid.
  */
 void Grid::merge( Grid other, int x0, int y0, bool alive_only ){
-    if(other.get_width() > get_width() || other.get_height() > get_height()){
+    if(other.get_width()+x0 > get_width() || other.get_height()+y0 > get_height()){
+        throw std::runtime_error("not within bounds");
+    }
+    if(x0 > get_width() || y0 > get_height() || x0 < 0 || y0 < 0){
         throw std::runtime_error("not within bounds");
     }
     for (int j = 0, y = y0; y < (other.get_height()+y0); j++, y++) {

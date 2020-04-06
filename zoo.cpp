@@ -76,15 +76,16 @@ Grid Zoo::glider(){
  * @return
  *      Returns a Grid containing a r-pentomino.
  */
-/*Grid Zoo::r_(){
+Grid Zoo::r_pentomino(){
     Grid grid = Grid(3);
     grid.set(1,0,Cell::ALIVE);
-    grid.set(2,1,Cell::ALIVE);
-    grid.set(0,2,Cell::ALIVE);
+    grid.set(2,0,Cell::ALIVE);
+    grid.set(0,1,Cell::ALIVE);
+    grid.set(1,1,Cell::ALIVE);
     grid.set(1,2,Cell::ALIVE);
-    grid.set(2,2,Cell::ALIVE);
     return grid;
-}*/
+}
+
 
 /**
  * Zoo::light_weight_spaceship()
@@ -107,6 +108,19 @@ Grid Zoo::glider(){
  * @return
  *      Returns a grid containing a light weight spaceship.
  */
+Grid Zoo::light_weight_spaceship(){
+    Grid grid = Grid(5,4);
+    grid.set(1,0,Cell::ALIVE);
+    grid.set(4,0,Cell::ALIVE);
+    grid.set(0,1,Cell::ALIVE);
+    grid.set(0,2,Cell::ALIVE);
+    grid.set(4,2,Cell::ALIVE);
+    grid.set(0,3,Cell::ALIVE);
+    grid.set(1,3,Cell::ALIVE);
+    grid.set(2,3,Cell::ALIVE);
+    grid.set(3,3,Cell::ALIVE);
+    return grid;
+}
 
 
 /**
@@ -203,6 +217,9 @@ Grid Zoo::load_ascii(std::string path){
 void Zoo::save_ascii(std::string path, Grid grid){
     std::ofstream outputFile;
     outputFile.open(path);
+    if(!outputFile.is_open()){
+        throw std::runtime_error("can't be opened");
+    }
 
     outputFile << grid.get_width();
     outputFile << " ";
@@ -243,6 +260,43 @@ void Zoo::save_ascii(std::string path, Grid grid){
  *          - The file cannot be opened.
  *          - The file ends unexpectedly.
  */
+Grid Zoo::load_binary(std::string path){
+    int width;
+    int height;
+
+    std::ifstream inputFile(path,std::ios::binary);
+    if(!inputFile.is_open()){
+        throw std::runtime_error("can't be opened");
+    }
+    inputFile.read((char*)&width, 4);
+    inputFile.read((char*)&height, 4);
+
+    Grid grid = Grid(width,height);
+    std::vector<bool> gridVector;
+    char c;
+    while(inputFile.good()){
+        inputFile.read((char*)&c, 1);
+        std::bitset<8> bit = c;
+        for(int i = 0; i < 8; i++){
+            gridVector.push_back(bit.test(i));
+        }
+    }
+
+    std::cout << "\n";
+    for(int j = 0; j < height; j++){
+        for(int i = 0; i < width; i++){
+            if(gridVector.at(i + (width * j)) == 0){
+                grid.set(i,j,DEAD);
+            }else if(gridVector.at(i + (width * j)) == 1){
+                grid.set(i,j,ALIVE);
+            }else{
+                std::cout << "woops" ;
+            }
+        }
+    }
+
+    return grid;
+}
 
 
 /**
@@ -273,4 +327,51 @@ void Zoo::save_ascii(std::string path, Grid grid){
  * @throws
  *      Throws std::runtime_error or sub-class if the file cannot be opened.
  */
+void Zoo::save_binary(std::string path, Grid grid){
+    std::ofstream outputFile;
+    outputFile.open(path);
+    if(!outputFile.is_open()){
+        throw std::runtime_error("can't be opened");
+    }
+
+    int width = grid.get_width();
+    int height = grid.get_height();
+    outputFile.write((char*)&width, 4);
+    outputFile.write((char*)&height, 4);
+
+    std::string cVector = "";
+
+    std::vector<char> dVector;
+    for(int j = 0; j < height; j++){
+        for(int i = 0; i < width; i++){
+            if(grid.get(i,j) == ALIVE){
+                cVector = cVector + "1";
+            }else if(grid.get(i,j) == DEAD){
+                cVector = cVector + "0";
+            }
+
+            if(cVector.length() == 8){
+                reverse(cVector.begin(),cVector.end());
+                std::bitset<8> bit(cVector);
+                unsigned long i = bit.to_ulong();
+                char f = static_cast<char>(i);
+                dVector.push_back(f);
+                cVector = "";
+            }else if(i == width-1 && j == height-1){
+                reverse(cVector.begin(),cVector.end());
+                std::bitset<8> bit(cVector);
+                unsigned long i = bit.to_ulong();
+                char f = static_cast<char>(i);
+                dVector.push_back(f);
+            }
+        }
+    }
+
+    for(unsigned int i = 0; i < dVector.size(); i++){
+        outputFile.write((char*)&dVector.at(i), sizeof(dVector.at(i)));
+    }
+
+    outputFile.close();
+
+}
 

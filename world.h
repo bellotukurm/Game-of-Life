@@ -5,8 +5,8 @@
  * The test suites provide granular BDD style (Behaviour Driven Development) test cases
  * which will help further understand the specification you need to code to.
  *
- * @author YOUR_STUDENT_NUMBER
- * @date March, 2020
+ * @author 931478
+ * @date 06, March, 2020
  */
 #pragma once
 
@@ -41,7 +41,7 @@ class World {
         int get_alive_cells();
         int get_dead_cells();
 
-        Grid get_state() const;
+        Grid get_state();
         void resize(int square_size);
         void resize(int new_width, int new_height);
 

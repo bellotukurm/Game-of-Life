@@ -8,8 +8,8 @@
  *
  * You are encouraged to use STL container types as an underlying storage mechanism for the grid cells.
  *
- * 931478
- * 15 March, 2020
+ * @author 931478
+ * @date 17th April, 2020
  */
 #include "grid.h"
 #include <iostream>
@@ -60,6 +60,8 @@ Grid::Grid(){
 Grid::Grid(int square_size){
     this->width = square_size;
     this->height = square_size;
+
+    //loop fills grid with the needed amount of dead cells
     for (int i = 0; i < (height*width); i++) {
         gridCells.push_back(Cell::DEAD);
     }
@@ -84,6 +86,8 @@ Grid::Grid(int square_size){
 Grid::Grid(int width, int height){
     this->width = width;
     this->height = height;
+
+    //loop fills grid with the needed amount of dead cells
     for (int i = 0; i < (height*width); i++) {
         gridCells.push_back(Cell::DEAD);
     }
@@ -196,6 +200,8 @@ Grid::get_total_cells() const{
  */
 int Grid::get_alive_cells() const{
     int count = 0;
+
+    //loop checks grid for alive cells
     for (int i = 0; i < (height*width); i++) {
         if(gridCells[i] == ALIVE){
             count++;
@@ -230,6 +236,8 @@ int Grid::get_alive_cells() const{
  */
 int Grid::get_dead_cells() const{
     int count = 0;
+
+    //loop checks grid for dead cells
     for (int i = 0; i < (height*width); i++) {
         if(gridCells[i] == DEAD){
             count++;
@@ -264,10 +272,14 @@ void Grid::resize(int square_size){
     this->width = square_size;
     this->height = square_size;
 
+    /*checks the five possible scenarios of width and height then performs the appropriate code
+    code needed for that scenario*/
     if(this->height >= prevHeight && this->width < prevWidth){
         gridCells.clear();
         int cx = 0;
         int cy = 0;
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if(cx < prevWidth && cy < prevHeight){
@@ -287,6 +299,8 @@ void Grid::resize(int square_size){
         gridCells.clear();
         int cx = 0;
         int cy = 0;
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if(cx < prevWidth && cy < prevHeight){
@@ -306,6 +320,8 @@ void Grid::resize(int square_size){
         gridCells.clear();
         int cx = 0;
         int cy = 0;
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if(cx < prevWidth && cy < prevHeight){
@@ -322,6 +338,8 @@ void Grid::resize(int square_size){
         }
     }
     else if(this->height < prevHeight && this->width < prevWidth){
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < prevHeight; y++) {
             for (int x = 0; x < prevWidth; x++) {
                 if(x >= width || y >= height){
@@ -331,6 +349,7 @@ void Grid::resize(int square_size){
         }
     }
     else if(this->height == prevHeight && this->width == prevWidth){
+        //do nothing if the resize parameters match
     }
 
 }
@@ -364,10 +383,14 @@ void Grid::resize(int w, int h){
     this->width = w;
     this->height = h;
 
+    /*checks the five possible scenarios of width and height then performs the appropriate code
+    code needed for that scenario*/
     if(this->height >= prevHeight && this->width < prevWidth){
         gridCells.clear();
         int cx = 0;
         int cy = 0;
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if(cx < prevWidth && cy < prevHeight){
@@ -387,6 +410,8 @@ void Grid::resize(int w, int h){
         gridCells.clear();
         int cx = 0;
         int cy = 0;
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if(cx < prevWidth && cy < prevHeight){
@@ -406,6 +431,8 @@ void Grid::resize(int w, int h){
         gridCells.clear();
         int cx = 0;
         int cy = 0;
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if(cx < prevWidth && cy < prevHeight){
@@ -422,6 +449,8 @@ void Grid::resize(int w, int h){
         }
     }
     else if(this->height < prevHeight && this->width < prevWidth){
+
+        //nested for loops that assigns the values the grid cells should have
         for (int y = 0; y < prevHeight; y++) {
             for (int x = 0; x < prevWidth; x++) {
                 if(x >= width || y >= height){
@@ -431,6 +460,7 @@ void Grid::resize(int w, int h){
         }
     }
     else if(this->height == prevHeight && this->width == prevWidth){
+        //do nothing if the resize parameters match
     }
 
 }
@@ -453,6 +483,7 @@ void Grid::resize(int w, int h){
  *      The 1d offset from the start of the data array where the desired cell is located.
  */
 int Grid::get_index(int x, int y) const{
+    //using the formula for converting 2d vector to 1d
     return x + (width * y);
 }
 
@@ -486,6 +517,7 @@ int Grid::get_index(int x, int y) const{
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
 Cell Grid::get(int x, int y) const{
+    //exception
     if(x > get_width() || y > get_height() || x<0 || y<0){
         throw std::runtime_error("not within bounds");
     }
@@ -521,6 +553,7 @@ Cell Grid::get(int x, int y) const{
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
 void Grid::set(int x, int y, Cell value){
+    //exception
     if(x >= get_width() || y >= get_height() || x<0 || y<0){
         throw std::runtime_error("not within bounds");
     }
@@ -565,6 +598,7 @@ void Grid::set(int x, int y, Cell value){
  *      std::runtime_error or sub-class if x,y is not a valid coordinate within the grid.
  */
 Cell& Grid::operator()( int x, int y) {
+    //exception
     if(x > get_width() || y > get_height() || x<0 || y<0){
         throw std::runtime_error("not within bounds");
     }
@@ -603,6 +637,7 @@ Cell& Grid::operator()( int x, int y) {
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
 const Cell& Grid::operator()( int x, int y)const  {
+    //exception
     if(x > get_width() || y > get_height() || x<0 || y<0){
         throw std::runtime_error("not within bounds");
     }
@@ -645,10 +680,12 @@ const Cell& Grid::operator()( int x, int y)const  {
  *      or if the crop window has a negative size.
  */
 Grid Grid::crop(int x0, int y0, int x1, int y1){
+    //exception
     if(x0 > get_width() || y0 > get_height() || x0<0 || y0<0 ||
         x1 > get_width() || y1 > get_height() || x1<0 || y1<0 ){
         throw std::runtime_error("not within bounds");
     }
+    //exception
     if(x0 == y1 && x1 == y0){
         throw std::runtime_error("not within bounds");
     }
@@ -659,6 +696,8 @@ Grid Grid::crop(int x0, int y0, int x1, int y1){
     Grid croppedGrid = Grid(croppedWidth, croppedHeight);
 
     croppedGrid.gridCells.clear();
+
+    //nested for loops that make grid cells have the value of new cropped version
     for (int y = y0; y < y1; y++) {
         for (int x = x0; x < x1; x++) {
             croppedGrid.gridCells.push_back(gridCellsOld[get_index(x, y)]);
@@ -706,14 +745,19 @@ Grid Grid::crop(int x0, int y0, int x1, int y1){
  *      std::exception or sub-class if the other grid being placed does not fit within the bounds of the current grid.
  */
 void Grid::merge( Grid other, int x0, int y0, bool alive_only ){
+    //exception
     if(other.get_width()+x0 > get_width() || other.get_height()+y0 > get_height()){
         throw std::runtime_error("not within bounds");
     }
+    //exception
     if(x0 > get_width() || y0 > get_height() || x0 < 0 || y0 < 0){
         throw std::runtime_error("not within bounds");
     }
+
+    //nested for loop that puts the value of the other from where x0 and y0 starts
     for (int j = 0, y = y0; y < (other.get_height()+y0); j++, y++) {
         for (int i = 0, x = x0; x < (other.get_width()+x0); i++, x++) {
+            //skips dead cells in the other grid if alive_only is true
             if(alive_only){
                 if(other.gridCells[other.get_index(i, j)] == Cell::ALIVE){
                     gridCells[get_index(x, y)] = other.gridCells[other.get_index(i, j)];
@@ -754,11 +798,16 @@ Grid Grid::rotate(int rotation){
     Grid returnGrid3;
     Grid returnGridFinal;
     int times = rotation%4;
+
+    /*conditional that sets the number of times the grid should rotate the minimum amount
+    of times to produce same result*/
     if(times < 0){
         times = 4 + times;
     }
 
+    //loop that runs number of times
     for(int i = 0; i < times; i++){
+        //conditional that checks the amount of times the grid has rotated and accordingly rotates it
         if(i==0){
             returnGrid1 = Grid(height, width);
             for(int i = 0; i < returnGrid1.get_height(); i++){
@@ -785,6 +834,7 @@ Grid Grid::rotate(int rotation){
             returnGridFinal = returnGrid3;
         }
     }
+    //conditional that checks if grid would be unaffected by rotation
     if(times == 0){
         returnGridFinal = Grid(width, height);
         returnGridFinal.gridCells  = gridCells;

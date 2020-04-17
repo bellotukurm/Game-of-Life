@@ -18,8 +18,8 @@
  *                padded with zero or more 0 bits.
  *              - a 0 bit should be considered Cell::DEAD, a 1 bit should be considered Cell::ALIVE.
  *
- * @author YOUR_STUDENT_NUMBER
- * @date March, 2020
+ * @author 931478
+ * @date 17th April, 2020
  */
 #include "zoo.h"
 
@@ -149,6 +149,7 @@ Grid Zoo::light_weight_spaceship(){
  */
 Grid Zoo::load_ascii(std::string path){
     std::ifstream inputFile(path);
+    //exception
     if(!inputFile.is_open()){
         throw std::runtime_error("can't be opened");
     }
@@ -156,6 +157,7 @@ Grid Zoo::load_ascii(std::string path){
     int height;
     inputFile >> width;
     inputFile >> height;
+    //exception
     if(width < 1 || height < 1){
         throw std::runtime_error("width or height not a positive integer");
     }
@@ -164,19 +166,25 @@ Grid Zoo::load_ascii(std::string path){
     char ch;
     std::vector<char> cVector;
 
+    //loop to read file line by line
     for(std::string line; getline(inputFile, line);){
         std::stringstream lineS(line);
+        //loop to pass each character in the line to an array
         while(lineS >> std::noskipws >> ch){
             cVector.push_back(ch);
         }
     }
+
+    //nested loops that goes through all of returning grid's cells
     for(int j = 0; j < grid.get_height(); j++){
         for(int i = 0; i < grid.get_width(); i++){
+            //conditional that uses formula to convert 2d grid to 1d
             if(cVector.at(i + (width * j)) == ' '){
                 grid.set(i,j,DEAD);
             }else if(cVector.at(i + (width * j)) == '#'){
                 grid.set(i,j,ALIVE);
             }else{
+                //exception
                 throw std::runtime_error("char not alive or dead");
             }
         }
@@ -217,6 +225,7 @@ Grid Zoo::load_ascii(std::string path){
 void Zoo::save_ascii(std::string path, Grid grid){
     std::ofstream outputFile;
     outputFile.open(path);
+    //exception
     if(!outputFile.is_open()){
         throw std::runtime_error("can't be opened");
     }
@@ -227,6 +236,8 @@ void Zoo::save_ascii(std::string path, Grid grid){
     outputFile << "\n";
 
     std::vector<char> cVector;
+
+    //nested loop that saves characters from passed grid to file
     for(int j = 0; j < grid.get_height(); j++){
         for(int i = 0; i < grid.get_width(); i++){
             outputFile << char(grid.get(i,j));
@@ -265,6 +276,7 @@ Grid Zoo::load_binary(std::string path){
     int height;
 
     std::ifstream inputFile(path,std::ios::binary);
+    //exception
     if(!inputFile.is_open()){
         throw std::runtime_error("can't be opened");
     }
@@ -274,23 +286,28 @@ Grid Zoo::load_binary(std::string path){
     Grid grid = Grid(width,height);
     std::vector<bool> gridVector;
     char c;
+
+    //loop that keeps going until end of binary file
     while(inputFile.good()){
         inputFile.read((char*)&c, 1);
         std::bitset<8> bit = c;
+        //loop that converts each value of bitset to 0 or 1 and passes it to an array
         for(int i = 0; i < 8; i++){
             gridVector.push_back(bit.test(i));
         }
     }
 
-    std::cout << "\n";
+    //nested loops that goes through all of returning grid's cells
     for(int j = 0; j < height; j++){
         for(int i = 0; i < width; i++){
+            //conditional that uses formula to convert 2d grid to 1d
             if(gridVector.at(i + (width * j)) == 0){
                 grid.set(i,j,DEAD);
             }else if(gridVector.at(i + (width * j)) == 1){
                 grid.set(i,j,ALIVE);
             }else{
-                std::cout << "woops" ;
+                //exception
+                throw std::runtime_error("char not alive or dead");
             }
         }
     }
@@ -330,6 +347,7 @@ Grid Zoo::load_binary(std::string path){
 void Zoo::save_binary(std::string path, Grid grid){
     std::ofstream outputFile;
     outputFile.open(path);
+    //exception
     if(!outputFile.is_open()){
         throw std::runtime_error("can't be opened");
     }
@@ -342,6 +360,12 @@ void Zoo::save_binary(std::string path, Grid grid){
     std::string cVector = "";
 
     std::vector<char> dVector;
+
+    /*nested loop that goes through all the cell for the grid passed and changes the
+    values to a string of 1's and 0's once the list reaches length of 8 it reverses
+    the string and turns the string to a bitset then long the casted to a char that
+    is then passed to an array. Same thing is done when at last cell and length is
+    not string length not equal to 8*/
     for(int j = 0; j < height; j++){
         for(int i = 0; i < width; i++){
             if(grid.get(i,j) == ALIVE){
@@ -367,11 +391,10 @@ void Zoo::save_binary(std::string path, Grid grid){
         }
     }
 
+    //Put everything in the array of chars to bainary file
     for(unsigned int i = 0; i < dVector.size(); i++){
         outputFile.write((char*)&dVector.at(i), sizeof(dVector.at(i)));
     }
-
     outputFile.close();
-
 }
 

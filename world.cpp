@@ -18,8 +18,8 @@
  *          - Moving off the left edge you appear on the right edge and vice versa.
  *          - Moving off the top edge you appear on the bottom edge and vice versa.
  *
- * @author YOUR_STUDENT_NUMBER
- * @date March, 2020
+ * @author 931478
+ * @date 17th April, 2020
  */
 #include "world.h"
 
@@ -67,6 +67,8 @@ World::World(int square_size){
 
     currentGrid = Grid(width, height);
     nextGrid = Grid(width, height);
+
+    //nested loop to fill current and next grid cells with dead cells
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             currentGrid.set(x,y,Cell::DEAD);
@@ -97,6 +99,8 @@ World::World(int width, int height){
 
     currentGrid = Grid(width, height);
     nextGrid = Grid(width, height);
+
+    //nested loop to fill current and next grid cells with dead cells
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             currentGrid.set(x,y,Cell::DEAD);
@@ -131,6 +135,8 @@ World::World(Grid initial_state){
 
     currentGrid = Grid(width, height);
     nextGrid = Grid(width, height);
+
+    //nested loop to fill current and next grid cells with the cells for the grid passed
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             currentGrid.set(x,y,initial_state.get(x,y));
@@ -249,6 +255,8 @@ int World::get_total_cells(){
  */
 int World::get_alive_cells(){
     int count = 0;
+
+    //nested loop to get number of all alive cells in the world
     for (int y = 0; y < currentGrid.get_height(); y++) {
         for (int x = 0; x < currentGrid.get_width(); x++) {
             if(currentGrid.get(x, y) == Cell::ALIVE){
@@ -285,6 +293,8 @@ int World::get_alive_cells(){
  */
 int World::get_dead_cells(){
     int count = 0;
+
+    //nested loop to get number of all dead cells in the world
     for (int y = 0; y < currentGrid.get_height(); y++) {
         for (int x = 0; x < currentGrid.get_width(); x++) {
             if(currentGrid.get(x, y) == Cell::DEAD){
@@ -413,11 +423,15 @@ void World::resize(int new_width, int new_height){
 int World::count_neighbours(int x, int y, bool toroidal){
     int counter = 0;
 
+    //nested loop that goes through all neighbour cell and the cell at (x,y)
     for(int j = y-1; j <= y+1; j++){
         for(int i = x-1; i <= x+1; i++){
+            //conditional to do nothing when at cell (x,y)
             if(i==x && j==y){}
             else{
                 if(toroidal){
+                    /*conditional that checks what value of cell should be when out of
+                    bounds brfore counting the neighbour if alive*/
                     if(i >= get_width() || j >= get_height() || i<0 || j<0){
 
                         int a = i;
@@ -441,6 +455,7 @@ int World::count_neighbours(int x, int y, bool toroidal){
                         counter++;
                     }
                 }else{
+                    //conditional that checks if value of cell out of bounds
                     if(i >= get_width() || j >= get_height() || i<0 || j<0){}
                     else if(currentGrid.get(i,j) == Cell::ALIVE){
                         counter++;
@@ -474,6 +489,8 @@ int World::count_neighbours(int x, int y, bool toroidal){
  */
 void World::step(bool toroidal){
 
+    /*nested loop to check every cell in world and analyse whether cell will
+    be dead or alive in the next step*/
     for(int y = 0; y < get_height(); y++){
         for(int x = 0; x < get_width(); x++){
             int aliveNeighbours = count_neighbours(x, y, toroidal);
@@ -488,6 +505,7 @@ void World::step(bool toroidal){
             }
         }
     }
+    //take the next step
     currentGrid = nextGrid;
 }
 
@@ -506,6 +524,7 @@ void World::step(bool toroidal){
  *      wraps to the right edge and the top to the bottom. Defaults to false.
  */
 void World::advance(int steps, bool toroidal){
+    //change world the number of steps
     for(int i = 0; i < steps; i++){
         step(toroidal);
     }
